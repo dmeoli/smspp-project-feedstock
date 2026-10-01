@@ -15,6 +15,8 @@ cmake %CMAKE_ARGS% ^
     -DCMAKE_DISABLE_FIND_PACKAGE_Torch=ON ^
     -DHiGHS_ROOT=%LIBRARY_PREFIX% ^
     -DStOpt_ROOT=%LIBRARY_PREFIX% ^
+    -DCMAKE_DISABLE_FIND_PACKAGE_CaDiCaL=ON ^
+    -DCMAKE_DISABLE_FIND_PACKAGE_MiniSat=ON ^
     ..
 if %ERRORLEVEL% neq 0 (type CMakeError.log && exit 1)
 

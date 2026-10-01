@@ -17,5 +17,7 @@ cmake ${CMAKE_ARGS} \
     -DCMAKE_DISABLE_FIND_PACKAGE_Torch=ON \
     -DHiGHS_ROOT=${PREFIX} \
     -DStOpt_ROOT=${PREFIX} \
+    -DCADICAL_ROOT=${PREFIX} \
+    -DCMAKE_DISABLE_FIND_PACKAGE_MiniSat=ON \
     ..
 cmake --build . --config Release -j ${CPU_COUNT}

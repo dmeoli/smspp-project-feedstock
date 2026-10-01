@@ -41,6 +41,8 @@ LIBS = [
       "impi-devel >=2021.18  # [win and mpi == \"impi-devel\"]"]),
     ("libsmspp-svm", "SVMBlock", ["libsmspp"], ["libsvm"]),
     ("libsmspp-sfdcr", "SingleFlowDCRBlock", ["libsmspp"], []),
+    ("libsmspp-sat", "SATBlock", ["libsmspp"], ["cadical  # [unix]"]),
+    ("libsmspp-satellites", "SatellitesBlock", ["libsmspp"], []),
     ("libsmspp-milp", "MILPSolver", ["libsmspp"], ["highs"]),
     ("libsmspp-bundle", "BundleSolver", ["libsmspp-milp"], []),
     ("libsmspp-lds", "LagrangianDualSolver",
