@@ -41,7 +41,8 @@ LIBS = [
       "impi-devel >=2021.18  # [win and mpi == \"impi-devel\"]"]),
     ("libsmspp-svm", "SVMBlock", ["libsmspp"], ["libsvm"]),
     ("libsmspp-sfdcr", "SingleFlowDCRBlock", ["libsmspp"], []),
-    ("libsmspp-sat", "SATBlock", ["libsmspp"], ["cadical  # [unix]"]),
+    ("libsmspp-sat", "SATBlock", ["libsmspp"],
+     ["cadical  # [unix and not ppc64le]"]),
     ("libsmspp-satellites", "SatellitesBlock", ["libsmspp"], []),
     ("libsmspp-milp", "MILPSolver", ["libsmspp"], ["highs"]),
     ("libsmspp-bundle", "BundleSolver", ["libsmspp-milp"], []),
@@ -137,7 +138,9 @@ def externals(needs, own=()):
 
 META = os.path.join(os.path.dirname(os.path.abspath(__file__)), "meta.yaml")
 head, tail = open(META).read().split("outputs:\n", 1)
-about = tail[tail.index("about:\n"):]
+# the about of the recipe, the one at the start of a line: an output may
+# have its own, indented
+about = tail[tail.index("\nabout:\n") + 1:]
 
 o = []
 w = o.append

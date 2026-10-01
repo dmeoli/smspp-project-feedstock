@@ -70,9 +70,10 @@ requirements:
     - highs >=1.10.0
     - lemon
     - libsvm
-    # the SAT solver of SATBlock, which has no Windows build; MiniSat is in
-    # no package, hence SATBlock has CaDiCaL only
-    - cadical  # [unix]
+    # the SAT solver of SATBlock, which conda-forge does not build for Windows
+    # and for ppc64le; MiniSat is in no package, hence SATBlock has CaDiCaL
+    # only
+    - cadical  # [unix and not ppc64le]
     - stopt >=6.3 mpi_msmpi_*  # [win and mpi == "msmpi"]
     - stopt >=6.3 mpi_impi_*  # [win and mpi == "impi-devel"]
     - stopt >=5.16  # [unix]
@@ -664,7 +665,7 @@ outputs:
         - cmake >=3.21
       host:
         - {{ pin_subpackage('libsmspp', exact=True) }}
-        - cadical  # [unix]
+        - cadical  # [unix and not ppc64le]
         - libboost-devel
         - eigen
         - netcdf-cxx4
