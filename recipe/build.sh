@@ -18,6 +18,7 @@ cmake ${CMAKE_ARGS} \
     -DHiGHS_ROOT=${PREFIX} \
     -DStOpt_ROOT=${PREFIX} \
     -DCADICAL_ROOT=${PREFIX} \
+    -DRECORD_ROOT=${SRC_DIR}/record \
     -DCMAKE_DISABLE_FIND_PACKAGE_MiniSat=ON \
     ..
 cmake --build . --config Release -j ${CPU_COUNT}

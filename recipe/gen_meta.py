@@ -57,6 +57,13 @@ LIBS = [
      ["libsmspp-tssb"], []),
 ]
 
+# the outputs that carry code under a license other than that of SMS++: the
+# RECORD solver (MIT) is compiled into BinaryKnapsackBlock, while COMBO, whose
+# code is for academic use only and cannot be redistributed, is left out
+ABOUT = {
+    "libsmspp-bkb": ("LGPL-3.0-only AND MIT", ["LICENSE", "record/LICENSE"]),
+}
+
 # what an output that links MPI needs at run time, beyond its own modules
 MPI_RUN = ['{{ mpi }}  # [unix]',
            'msmpi  # [win and mpi == "msmpi"]',
@@ -168,6 +175,14 @@ for name, module, needs, reqs in LIBS:
     w("      commands:\n")
     w(f"        - test -f ${{PREFIX}}/lib/cmake/{module}/{module}Config.cmake  # [unix]\n")
     w(f"        - if not exist %LIBRARY_PREFIX%\\lib\\cmake\\{module}\\{module}Config.cmake exit 1  # [win]\n")
+    if name in ABOUT:
+        lic, files = ABOUT[name]
+        w("    about:\n")
+        w("      home: https://gitlab.com/smspp/smspp-project\n")
+        w(f"      license: {lic}\n")
+        w("      license_file:\n")
+        for f in files:
+            w(f"        - {f}\n")
     w("\n")
 w("  # the command-line tools, each with its configuration and examples\n")
 for name, dirs, needs, cmds in TOOLS:
