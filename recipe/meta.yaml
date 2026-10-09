@@ -1,4 +1,4 @@
-{% set version = "0.7.0.dev" %}
+{% set version = "0.7.0" %}
 {% set build = 0 %}
 {% set mpi_label = mpi|replace("-devel", "") %}
 {% set fastflow_commit = "d476f66ab924d8d122f54b4b90aee00ef979aea8" %}
@@ -9,10 +9,8 @@ package:
   version: {{ version }}
 
 source:
-  # the tip of develop, submodules included, to try the release before it is
-  # tagged: then the tarball of the registry and its sha256 come back here
-  - git_url: https://gitlab.com/smspp/smspp-project
-    git_rev: develop
+  - url: https://gitlab.com/smspp/smspp-project/-/releases/{{ version }}/downloads/smspp-project-{{ version }}.tar.gz
+    sha256: 66cddca3f77e92d1e7426a7613742efec8492cd84627fa56eedce8b478222d96
   # SMS++ fetches FastFlow at configure time; it is provided here instead, at
   # a fixed commit, for a reproducible build
   - url: https://github.com/fastflow/fastflow/archive/{{ fastflow_commit }}.tar.gz
