@@ -42,7 +42,6 @@ LIBS = [
       "impi-devel >=2021.18  # [win and mpi == \"impi-devel\"]"]),
     ("libsmspp-svm", "SVMBlock", ["libsmspp"], ["libsvm"]),
     ("libsmspp-sfdcr", "SingleFlowDCRBlock", ["libsmspp"], []),
-    ("libsmspp-csp", "CSPBlock", ["libsmspp"], []),
     # CaDiCaL only: conda-forge has no MiniSat, and no cadical for Windows or
     # ppc64le, where SATBlock drops its SAT backend (see build.sh)
     ("libsmspp-sat", "SATBlock", ["libsmspp"],
