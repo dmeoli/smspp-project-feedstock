@@ -8,7 +8,8 @@ import os
 
 LIBS = [
     ("libsmspp", "SMS++", [],
-     ["libboost-devel", "eigen", "netcdf-cxx4", "netcdf-cxx4 * nompi_*",
+     ["libboost-devel", "eigen",
+      "netcdf-cxx4 <=4.3.1", "netcdf-cxx4 * nompi_*",
       "libnetcdf", "libnetcdf * nompi_*", "hdf5", "hdf5 * nompi_*",
       "libaec  # [unix]", "openssl  # [unix]", "libcurl  # [unix]", "zlib",
       "getopt-win32  # [win]"]),
@@ -43,8 +44,7 @@ LIBS = [
     ("libsmspp-sfdcr", "SingleFlowDCRBlock", ["libsmspp"], []),
     ("libsmspp-milp", "MILPSolver", ["libsmspp"], ["highs"]),
     ("libsmspp-bundle", "BundleSolver", ["libsmspp-milp"],
-     ["coin-or-utils", "coin-or-clp", "coin-or-osi", "openblas",
-      "libopenblas", "bzip2", "mkl-devel {{ mkl_devel }}  # [win]"]),
+     ["bzip2"]),
     ("libsmspp-lds", "LagrangianDualSolver",
      ["libsmspp-milp"], []),
     ("libsmspp-frankwolfe", "FrankWolfeSolver", ["libsmspp"], []),
@@ -52,7 +52,7 @@ LIBS = [
     ("libsmspp-bds", "BendersDecompositionSolver",
      ["libsmspp"], []),
     ("libsmspp-mcfclass", "MCFClassSolver", ["libsmspp-mcf"], []),
-    ("libsmspp-mcflemon", "MCFLemonSolver", ["libsmspp-mcf"], ["lemon"]),
+    # MCFLemonSolver needs abLEMON, which conda-forge does not have yet
     ("libsmspp-srs", "ScenarioReductionSolver",
      ["libsmspp-tssb"], []),
 ]
@@ -81,8 +81,7 @@ TOOLS = [
      [f"investmentblock_solver {EX}/investmentblock_solver/examples/InvestmentBlockBus.nc4"]),
     ("smspp-svm", ["svm_solver"], ["libsmspp-svm"] + SOLVERS, []),
     ("smspp-mcf", ["mcfblock_solver"],
-     ["libsmspp-mcf", "libsmspp-mcfclass", "libsmspp-mcflemon",
-      "libsmspp-milp"],
+     ["libsmspp-mcf", "libsmspp-mcfclass", "libsmspp-milp"],
      [f"mcfblock_solver {EX}/mcfblock_solver/examples/example.dmx"]),
     ("smspp-bkb", ["bkblock_solver"],
      ["libsmspp-bkb", "libsmspp-milp"],
@@ -95,8 +94,8 @@ TOOLS = [
     ("smspp-sfdcr", ["sfdcrblock_solver"],
      ["libsmspp-sfdcr", "libsmspp-milp"], []),
     ("smspp-tools", ["block_solver", "chgcfg"],
-     ["libsmspp-investment", "libsmspp-mcf", "libsmspp-mcfclass",
-      "libsmspp-mcflemon"] + SOLVERS, []),
+     ["libsmspp-investment", "libsmspp-mcf", "libsmspp-mcfclass"]
+     + SOLVERS, []),
 ]
 
 # the libraries are linked without --as-needed, so every one of them has

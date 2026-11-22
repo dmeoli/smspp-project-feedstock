@@ -1,13 +1,14 @@
-:: the whole umbrella is built once, and every output installs its part
+:: the whole umbrella is built once, and every output installs its part;
+:: MCFLemonSolver needs abLEMON, which conda-forge does not have yet
 mkdir build
 cd build
 cmake %CMAKE_ARGS% ^
     -DOpenMP_RUNTIME_MSVC="llvm" ^
     -DBUILD_tests=OFF ^
+    -DBUILD_MCFLemonSolver=OFF ^
     -DBUILD_SHARED_LIBS=OFF ^
     -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
     -DCMAKE_PREFIX_PATH=%LIBRARY_PREFIX% ^
-    -DFETCHCONTENT_SOURCE_DIR_FASTFLOW=%SRC_DIR%\fastflow ^
     -DCMAKE_DISABLE_FIND_PACKAGE_CPLEX=ON ^
     -DCMAKE_DISABLE_FIND_PACKAGE_GUROBI=ON ^
     -DCMAKE_DISABLE_FIND_PACKAGE_SCIP=ON ^
@@ -15,9 +16,8 @@ cmake %CMAKE_ARGS% ^
     -DCMAKE_DISABLE_FIND_PACKAGE_Torch=ON ^
     -DHiGHS_ROOT=%LIBRARY_PREFIX% ^
     -DStOpt_ROOT=%LIBRARY_PREFIX% ^
-    -DCoinUtils_ROOT=%LIBRARY_PREFIX% ^
-    -DOsi_ROOT=%LIBRARY_PREFIX% ^
-    -DClp_ROOT=%LIBRARY_PREFIX% ^
+    -DCMAKE_DISABLE_FIND_PACKAGE_CaDiCaL=ON ^
+    -DCMAKE_DISABLE_FIND_PACKAGE_MiniSat=ON ^
     ..
 if %ERRORLEVEL% neq 0 (type CMakeError.log && exit 1)
 

@@ -1,20 +1,16 @@
-{% set version = "0.6.3" %}
+{% set version = "0.8.0" %}
 {% set build = 0 %}
 {% set mpi_label = mpi|replace("-devel", "") %}
-{% set fastflow_commit = "d476f66ab924d8d122f54b4b90aee00ef979aea8" %}
 
 package:
   name: smspp-project-split
   version: {{ version }}
 
 source:
-  - url: https://gitlab.com/api/v4/projects/smspp%2Fsmspp-project/packages/generic/smspp-project/{{ version }}/smspp-project-{{ version }}.tar.gz
-    sha256: 35a08948bc4d9570076efbfd2d053e62269de456cd6325abc145bbb0947c1ad8
-  # SMS++ fetches FastFlow at configure time; it is provided here instead, at
-  # a fixed commit, for a reproducible build
-  - url: https://github.com/fastflow/fastflow/archive/{{ fastflow_commit }}.tar.gz
-    sha256: fca23ce672fe12fe7cdbfa6955a982d6eb75816a00d2d97a93deba9b351f9c53
-    folder: fastflow
+  # the release tarball carries FastFlow and RECORD in third-party/, at fixed
+  # commits and with their licenses, and CMake takes them from there
+  url: https://gitlab.com/smspp/smspp-project/-/releases/{{ version }}/downloads/smspp-project-{{ version }}.tar.gz
+  sha256: 443563acb9b864675a3ee71895d1d767ca0820a34c3c088363b440ee08034a02
 
 build:
   number: {{ build }}
@@ -36,10 +32,9 @@ requirements:
     - llvm-openmp   # [unix]
     - llvm-openmp  # [win and mpi == "impi-devel"]
     - intel-openmp  # [win and mpi == "msmpi"]
-    - openblas
     - libboost-devel
     - libboost-mpi >={{ libboost_devel }}
-    - netcdf-cxx4
+    - netcdf-cxx4 <=4.3.1  # Versions 4.3.2+ do not ship libnetcdf-cxx4.so.1 leading to runtime errors
     - netcdf-cxx4 * nompi_*
     - libnetcdf
     - libnetcdf * nompi_*
@@ -54,17 +49,17 @@ requirements:
     - {{ mpi }}  # [not win]
     - msmpi  # [win and mpi == "msmpi"]
     - impi-devel >=2021.18  # [win and mpi == "impi-devel"]
-    - coin-or-utils
-    - coin-or-clp
-    - coin-or-osi
+    # - scip >=9.2.3
     - highs >=1.10.0
-    - lemon
     - libsvm
+    # the SAT solver of SATBlock, which conda-forge does not build for Windows
+    # and for ppc64le; MiniSat is in no package, hence SATBlock has CaDiCaL
+    # only
+    - cadical  # [unix and not ppc64le]
     - stopt >=6.3 mpi_msmpi_*  # [win and mpi == "msmpi"]
     - stopt >=6.3 mpi_impi_*  # [win and mpi == "impi-devel"]
     - stopt >=5.16  # [unix]
     - getopt-win32  # [win]
-    - mkl-devel {{ mkl_devel }}  # [win]
     - zstd  # [win]
     - winpthreads-devel  # [win and mpi == "impi-devel"]
     - pthreads-win32  # [win and mpi == "msmpi"]
@@ -89,7 +84,7 @@ outputs:
       host:
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -125,7 +120,7 @@ outputs:
         - llvm-openmp  # [osx]
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -161,7 +156,7 @@ outputs:
         - {{ pin_subpackage('libsmspp', exact=True) }}
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -201,7 +196,7 @@ outputs:
         - llvm-openmp  # [osx]
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -243,7 +238,7 @@ outputs:
         - llvm-openmp  # [osx]
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -281,7 +276,7 @@ outputs:
         - {{ pin_subpackage('libsmspp', exact=True) }}
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -317,7 +312,7 @@ outputs:
         - {{ pin_subpackage('libsmspp', exact=True) }}
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -353,7 +348,7 @@ outputs:
         - {{ pin_subpackage('libsmspp', exact=True) }}
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -390,7 +385,7 @@ outputs:
         - {{ pin_subpackage('libsmspp', exact=True) }}
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -429,7 +424,7 @@ outputs:
         - {{ pin_subpackage('libsmspp', exact=True) }}
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -478,7 +473,7 @@ outputs:
         - llvm-openmp  # [osx]
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -532,7 +527,7 @@ outputs:
         - llvm-openmp  # [osx]
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -576,7 +571,7 @@ outputs:
         - libsvm
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -612,7 +607,7 @@ outputs:
         - {{ pin_subpackage('libsmspp', exact=True) }}
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -649,7 +644,7 @@ outputs:
         - highs
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -684,17 +679,11 @@ outputs:
       host:
         - {{ pin_subpackage('libsmspp-milp', exact=True) }}
         - {{ pin_subpackage('libsmspp', exact=True) }}
-        - coin-or-utils
-        - coin-or-clp
-        - coin-or-osi
-        - openblas
-        - libopenblas
         - bzip2
-        - mkl-devel {{ mkl_devel }}  # [win]
         - highs
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -733,7 +722,7 @@ outputs:
         - highs
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -770,7 +759,7 @@ outputs:
         - {{ pin_subpackage('libsmspp', exact=True) }}
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -806,7 +795,7 @@ outputs:
         - {{ pin_subpackage('libsmspp', exact=True) }}
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -842,7 +831,7 @@ outputs:
         - {{ pin_subpackage('libsmspp', exact=True) }}
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -879,7 +868,7 @@ outputs:
         - {{ pin_subpackage('libsmspp', exact=True) }}
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -897,45 +886,6 @@ outputs:
       commands:
         - test -f ${PREFIX}/lib/cmake/MCFClassSolver/MCFClassSolverConfig.cmake  # [unix]
         - if not exist %LIBRARY_PREFIX%\lib\cmake\MCFClassSolver\MCFClassSolverConfig.cmake exit 1  # [win]
-
-  - name: libsmspp-mcflemon
-    script: install-module.sh  # [unix]
-    script: install-module.bat  # [win]
-    build:
-      string: mpi_{{ mpi_label }}_h{{ PKG_HASH }}_{{ build }}
-      script_env:
-        - SMSPP_MODULES=MCFLemonSolver
-      run_exports:
-        - {{ pin_subpackage('libsmspp-mcflemon', max_pin='x.x.x') }}
-    requirements:
-      build:
-        - {{ compiler('cxx') }}
-        - {{ stdlib('c') }}
-        - cmake >=3.21
-      host:
-        - {{ pin_subpackage('libsmspp-mcf', exact=True) }}
-        - {{ pin_subpackage('libsmspp', exact=True) }}
-        - lemon
-        - libboost-devel
-        - eigen
-        - netcdf-cxx4
-        - netcdf-cxx4 * nompi_*
-        - libnetcdf
-        - libnetcdf * nompi_*
-        - hdf5
-        - hdf5 * nompi_*
-        - libaec  # [unix]
-        - openssl  # [unix]
-        - libcurl  # [unix]
-        - zlib
-        - getopt-win32  # [win]
-      run:
-        - {{ pin_subpackage('libsmspp-mcf', exact=True) }}
-        - {{ pin_subpackage('libsmspp', exact=True) }}
-    test:
-      commands:
-        - test -f ${PREFIX}/lib/cmake/MCFLemonSolver/MCFLemonSolverConfig.cmake  # [unix]
-        - if not exist %LIBRARY_PREFIX%\lib\cmake\MCFLemonSolver\MCFLemonSolverConfig.cmake exit 1  # [win]
 
   - name: libsmspp-srs
     script: install-module.sh  # [unix]
@@ -957,7 +907,7 @@ outputs:
         - {{ pin_subpackage('libsmspp', exact=True) }}
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -996,17 +946,11 @@ outputs:
         - {{ pin_subpackage('libsmspp-bundle', exact=True) }}
         - {{ pin_subpackage('libsmspp-milp', exact=True) }}
         - {{ pin_subpackage('libsmspp', exact=True) }}
-        - coin-or-utils
-        - coin-or-clp
-        - coin-or-osi
-        - openblas
-        - libopenblas
         - bzip2
-        - mkl-devel {{ mkl_devel }}  # [win]
         - highs
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -1049,17 +993,11 @@ outputs:
         - {{ pin_subpackage('libsmspp-milp', exact=True) }}
         - {{ pin_subpackage('libsmspp', exact=True) }}
         - {{ pin_subpackage('libsmspp-stochastic', exact=True) }}
-        - coin-or-utils
-        - coin-or-clp
-        - coin-or-osi
-        - openblas
-        - libopenblas
         - bzip2
-        - mkl-devel {{ mkl_devel }}  # [win]
         - highs
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -1105,17 +1043,11 @@ outputs:
         - {{ pin_subpackage('libsmspp', exact=True) }}
         - {{ pin_subpackage('libsmspp-tssb', exact=True) }}
         - {{ pin_subpackage('libsmspp-stochastic', exact=True) }}
-        - coin-or-utils
-        - coin-or-clp
-        - coin-or-osi
-        - openblas
-        - libopenblas
         - bzip2
-        - mkl-devel {{ mkl_devel }}  # [win]
         - highs
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -1169,16 +1101,10 @@ outputs:
         - bzip2
         - libgomp  # [linux]
         - llvm-openmp  # [osx]
-        - coin-or-utils
-        - coin-or-clp
-        - coin-or-osi
-        - openblas
-        - libopenblas
-        - mkl-devel {{ mkl_devel }}  # [win]
         - highs
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -1230,13 +1156,7 @@ outputs:
         - {{ mpi }}  # [not win]
         - msmpi  # [win and mpi == "msmpi"]
         - impi-devel >=2021.18  # [win and mpi == "impi-devel"]
-        - coin-or-utils
-        - coin-or-clp
-        - coin-or-osi
-        - openblas
-        - libopenblas
         - bzip2
-        - mkl-devel {{ mkl_devel }}  # [win]
         - highs
         - stopt >=5.16  # [unix]
         - stopt >=6.3 mpi_msmpi_*  # [win and mpi == "msmpi"]
@@ -1245,7 +1165,7 @@ outputs:
         - llvm-openmp  # [osx]
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -1292,17 +1212,11 @@ outputs:
         - {{ pin_subpackage('libsmspp-milp', exact=True) }}
         - {{ pin_subpackage('libsmspp', exact=True) }}
         - libsvm
-        - coin-or-utils
-        - coin-or-clp
-        - coin-or-osi
-        - openblas
-        - libopenblas
         - bzip2
-        - mkl-devel {{ mkl_devel }}  # [win]
         - highs
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -1338,14 +1252,12 @@ outputs:
       host:
         - {{ pin_subpackage('libsmspp-mcf', exact=True) }}
         - {{ pin_subpackage('libsmspp-mcfclass', exact=True) }}
-        - {{ pin_subpackage('libsmspp-mcflemon', exact=True) }}
         - {{ pin_subpackage('libsmspp-milp', exact=True) }}
         - {{ pin_subpackage('libsmspp', exact=True) }}
-        - lemon
         - highs
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -1359,7 +1271,6 @@ outputs:
       run:
         - {{ pin_subpackage('libsmspp-mcf', exact=True) }}
         - {{ pin_subpackage('libsmspp-mcfclass', exact=True) }}
-        - {{ pin_subpackage('libsmspp-mcflemon', exact=True) }}
         - {{ pin_subpackage('libsmspp-milp', exact=True) }}
         - {{ pin_subpackage('libsmspp', exact=True) }}
     test:
@@ -1389,7 +1300,7 @@ outputs:
         - highs
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -1433,7 +1344,7 @@ outputs:
         - llvm-openmp  # [osx]
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -1476,19 +1387,13 @@ outputs:
         - {{ pin_subpackage('libsmspp-bkb', exact=True) }}
         - {{ pin_subpackage('libsmspp-mcf', exact=True) }}
         - {{ pin_subpackage('libsmspp', exact=True) }}
-        - coin-or-utils
-        - coin-or-clp
-        - coin-or-osi
-        - openblas
-        - libopenblas
         - bzip2
-        - mkl-devel {{ mkl_devel }}  # [win]
         - highs
         - libgomp  # [linux]
         - llvm-openmp  # [osx]
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -1532,7 +1437,7 @@ outputs:
         - highs
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -1567,7 +1472,6 @@ outputs:
         - {{ pin_subpackage('libsmspp-investment', exact=True) }}
         - {{ pin_subpackage('libsmspp-mcf', exact=True) }}
         - {{ pin_subpackage('libsmspp-mcfclass', exact=True) }}
-        - {{ pin_subpackage('libsmspp-mcflemon', exact=True) }}
         - {{ pin_subpackage('libsmspp-lds', exact=True) }}
         - {{ pin_subpackage('libsmspp-bundle', exact=True) }}
         - {{ pin_subpackage('libsmspp-milp', exact=True) }}
@@ -1580,14 +1484,7 @@ outputs:
         - {{ mpi }}  # [not win]
         - msmpi  # [win and mpi == "msmpi"]
         - impi-devel >=2021.18  # [win and mpi == "impi-devel"]
-        - lemon
-        - coin-or-utils
-        - coin-or-clp
-        - coin-or-osi
-        - openblas
-        - libopenblas
         - bzip2
-        - mkl-devel {{ mkl_devel }}  # [win]
         - highs
         - stopt >=5.16  # [unix]
         - stopt >=6.3 mpi_msmpi_*  # [win and mpi == "msmpi"]
@@ -1596,7 +1493,7 @@ outputs:
         - llvm-openmp  # [osx]
         - libboost-devel
         - eigen
-        - netcdf-cxx4
+        - netcdf-cxx4 <=4.3.1
         - netcdf-cxx4 * nompi_*
         - libnetcdf
         - libnetcdf * nompi_*
@@ -1611,7 +1508,6 @@ outputs:
         - {{ pin_subpackage('libsmspp-investment', exact=True) }}
         - {{ pin_subpackage('libsmspp-mcf', exact=True) }}
         - {{ pin_subpackage('libsmspp-mcfclass', exact=True) }}
-        - {{ pin_subpackage('libsmspp-mcflemon', exact=True) }}
         - {{ pin_subpackage('libsmspp-lds', exact=True) }}
         - {{ pin_subpackage('libsmspp-bundle', exact=True) }}
         - {{ pin_subpackage('libsmspp-milp', exact=True) }}
@@ -1654,7 +1550,6 @@ outputs:
         - {{ pin_subpackage('libsmspp-bnx', exact=True) }}
         - {{ pin_subpackage('libsmspp-bds', exact=True) }}
         - {{ pin_subpackage('libsmspp-mcfclass', exact=True) }}
-        - {{ pin_subpackage('libsmspp-mcflemon', exact=True) }}
         - {{ pin_subpackage('libsmspp-srs', exact=True) }}
         - {{ pin_subpackage('smspp-ucblock', exact=True) }}
         - {{ pin_subpackage('smspp-tssb', exact=True) }}
@@ -1683,8 +1578,13 @@ about:
   description: |
     SMS++ project provides a system for modeling complex, block-structured mathematical models, and solving them via sophisticated, structure-exploiting algorithms.
     It is split into the libsmspp library of the core, a libsmspp-<module> library for each of its Blocks and Solvers, a package for each of its command-line tools (e.g. smspp-ucblock for ucblock_solver), and smspp-project, which installs them all.
-  license: LGPL-3.0-only
-  license_file: LICENSE
+  # FastFlow (under its MIT license, LICENSE.MIT, it being also under the
+  # LGPL-3) and RECORD are compiled into the libraries, hence their notices
+  license: LGPL-3.0-only AND MIT
+  license_file:
+    - LICENSE
+    - third-party/fastflow/LICENSE.MIT
+    - third-party/record/LICENSE
   doc_url: https://smspp.gitlab.io/
   dev_url: https://gitlab.com/smspp/smspp-project
 
