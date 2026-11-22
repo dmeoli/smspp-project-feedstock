@@ -774,6 +774,42 @@ outputs:
         - test -f ${PREFIX}/lib/cmake/MultiKnapsackAssignBlock/MultiKnapsackAssignBlockConfig.cmake  # [unix]
         - if not exist %LIBRARY_PREFIX%\lib\cmake\MultiKnapsackAssignBlock\MultiKnapsackAssignBlockConfig.cmake exit 1  # [win]
 
+  - name: libsmspp-hqp
+    script: install-module.sh  # [unix]
+    script: install-module.bat  # [win]
+    build:
+      string: mpi_{{ mpi_label }}_h{{ PKG_HASH }}_{{ build }}
+      script_env:
+        - SMSPP_MODULES=HQPBlock
+      run_exports:
+        - {{ pin_subpackage('libsmspp-hqp', max_pin='x.x.x') }}
+    requirements:
+      build:
+        - {{ compiler('cxx') }}
+        - {{ stdlib('c') }}
+        - cmake >=3.21
+      host:
+        - {{ pin_subpackage('libsmspp', exact=True) }}
+        - libboost-devel
+        - eigen
+        - netcdf-cxx4 <=4.3.1
+        - netcdf-cxx4 * nompi_*
+        - libnetcdf
+        - libnetcdf * nompi_*
+        - hdf5
+        - hdf5 * nompi_*
+        - libaec  # [unix]
+        - openssl  # [unix]
+        - libcurl  # [unix]
+        - zlib
+        - getopt-win32  # [win]
+      run:
+        - {{ pin_subpackage('libsmspp', exact=True) }}
+    test:
+      commands:
+        - test -f ${PREFIX}/lib/cmake/HQPBlock/HQPBlockConfig.cmake  # [unix]
+        - if not exist %LIBRARY_PREFIX%\lib\cmake\HQPBlock\HQPBlockConfig.cmake exit 1  # [win]
+
   - name: libsmspp-milp
     script: install-module.sh  # [unix]
     script: install-module.bat  # [win]
@@ -889,6 +925,42 @@ outputs:
       commands:
         - test -f ${PREFIX}/lib/cmake/LagrangianDualSolver/LagrangianDualSolverConfig.cmake  # [unix]
         - if not exist %LIBRARY_PREFIX%\lib\cmake\LagrangianDualSolver\LagrangianDualSolverConfig.cmake exit 1  # [win]
+
+  - name: libsmspp-subgrad
+    script: install-module.sh  # [unix]
+    script: install-module.bat  # [win]
+    build:
+      string: mpi_{{ mpi_label }}_h{{ PKG_HASH }}_{{ build }}
+      script_env:
+        - SMSPP_MODULES=SubGradSolver
+      run_exports:
+        - {{ pin_subpackage('libsmspp-subgrad', max_pin='x.x.x') }}
+    requirements:
+      build:
+        - {{ compiler('cxx') }}
+        - {{ stdlib('c') }}
+        - cmake >=3.21
+      host:
+        - {{ pin_subpackage('libsmspp', exact=True) }}
+        - libboost-devel
+        - eigen
+        - netcdf-cxx4 <=4.3.1
+        - netcdf-cxx4 * nompi_*
+        - libnetcdf
+        - libnetcdf * nompi_*
+        - hdf5
+        - hdf5 * nompi_*
+        - libaec  # [unix]
+        - openssl  # [unix]
+        - libcurl  # [unix]
+        - zlib
+        - getopt-win32  # [win]
+      run:
+        - {{ pin_subpackage('libsmspp', exact=True) }}
+    test:
+      commands:
+        - test -f ${PREFIX}/lib/cmake/SubGradSolver/SubGradSolverConfig.cmake  # [unix]
+        - if not exist %LIBRARY_PREFIX%\lib\cmake\SubGradSolver\SubGradSolverConfig.cmake exit 1  # [win]
 
   - name: libsmspp-frankwolfe
     script: install-module.sh  # [unix]
@@ -1696,9 +1768,11 @@ outputs:
         - {{ pin_subpackage('libsmspp-sat', exact=True) }}
         - {{ pin_subpackage('libsmspp-satellites', exact=True) }}
         - {{ pin_subpackage('libsmspp-mkab', exact=True) }}
+        - {{ pin_subpackage('libsmspp-hqp', exact=True) }}
         - {{ pin_subpackage('libsmspp-milp', exact=True) }}
         - {{ pin_subpackage('libsmspp-bundle', exact=True) }}
         - {{ pin_subpackage('libsmspp-lds', exact=True) }}
+        - {{ pin_subpackage('libsmspp-subgrad', exact=True) }}
         - {{ pin_subpackage('libsmspp-frankwolfe', exact=True) }}
         - {{ pin_subpackage('libsmspp-bnx', exact=True) }}
         - {{ pin_subpackage('libsmspp-bds', exact=True) }}
